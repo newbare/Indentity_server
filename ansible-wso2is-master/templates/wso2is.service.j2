@@ -1,0 +1,22 @@
+[Unit]
+Description={{ wso2_app }} init script
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+LimitNOFILE=65535
+Type=forking
+User={{ wso2_user }}
+Group={{ wso2_group }}
+
+Environment=JAVA_HOME={{ java_home }}
+Environment=JAVA_OPTS=
+
+PIDFile={{ carbon_home }}/wsp2ei.pid
+ExecStart={{ carbon_home }}/bin/integrator.sh -DportOffset={{wso2_app_offset}} start
+ExecStop={{ carbon_home }}/bin/integrator.sh -DportOffset={{wso2_app_offset}} stop
+TimeoutSec=120 
+
+[Install]
+WantedBy=multi-user.target
+

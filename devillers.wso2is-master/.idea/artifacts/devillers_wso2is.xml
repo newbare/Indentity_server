@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="devillers.wso2is">
+    <output-path>$PROJECT_DIR$/out/artifacts/devillers_wso2is</output-path>
+    <root id="archive" name="devillers.wso2is.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/custom/src/main/resources/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="devillers.wso2is" />
+    </root>
+  </artifact>
+</component>

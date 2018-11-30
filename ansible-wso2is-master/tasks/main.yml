@@ -1,0 +1,147 @@
+---
+# tasks file for klousiaj.wso2-esb
+
+#### section for creating wso2 user and appropriate credentials and access.
+- name: Create service group for wso2
+  become: true
+  group:
+    name: "{{ wso2_group }}"
+    state: present  
+- name: Create service account for wso2
+  become: true
+  become_method: sudo
+  user: 
+    name: "{{ wso2_user }}"
+    system: yes
+    home: "/home/{{ wso2_user }}"
+    shell: /bin/false
+    group: "{{ wso2_group }}"
+    state: present
+    
+- name: Add the wso2-app-sudoers script 
+  become: true
+  become_method: sudo
+  template:
+    src: wso2-app-sudoers.j2
+    dest: "/etc/sudoers.d/{{wso2_app}}-sudoers"
+    validate: 'visudo -cf %s'
+    mode: 0440
+  
+- import_tasks: centos-main.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: Check if the version already exists on the remote system.
+  stat: 
+    path: "{{ carbon_base }}/{{ wso2_app_directory }}"
+  register: version_deployed
+
+- name: Make the unzip directory for the wso2 apps.
+  become: true
+  become_method: sudo
+  file:
+    dest: "{{ unzip_folder }}"
+    owner: "{{ wso2_user }}"
+    group: "{{ wso2_group }}"
+    mode: 0775
+    state: directory
+  when: not version_deployed.stat.exists
+
+- name: Copy the file and unzip it on the remote system
+  become: true
+  become_method: sudo
+  become_user: "{{ wso2_user }}"
+  unarchive:
+    src: "{{ item }}"
+    dest: "{{ unzip_folder }}"
+    mode: 0755
+  with_items:
+    - "{{ wso2_app_archive }}"
+  when: not version_deployed.stat.exists
+    
+- name: Make the base directory for the wso2 apps.
+  become: true
+  become_method: sudo
+  file: 
+    dest: "{{ carbon_base }}"
+    owner: "{{ wso2_user }}"
+    group: "{{ wso2_group }}"
+    mode: 0755
+    state: directory
+  when: not version_deployed.stat.exists
+
+- name: Move WSO2 directory into place.
+  become: true
+  become_method: sudo
+  command: "mv {{ unzip_folder }}/{{ wso2_app_directory }} {{ carbon_base }}/{{ wso2_app_directory }}"
+  when: not version_deployed.stat.exists
+  
+- name: Create link to the install directory at carbon_home.
+  become: true
+  become_user: "{{ wso2_user }}"
+  file: 
+    state: link
+    src: "{{ carbon_base }}/{{ wso2_app_directory }}"
+    dest: "{{ carbon_home }}"
+  when: not version_deployed.stat.exists
+  
+- name: Add wso2 symlink to /usr/local/bin.
+  become: true
+  become_method: sudo
+  file:
+    src: "{{ carbon_home }}/bin/integrator.sh"
+    dest: "/usr/local/bin/{{ wso2_app }}"
+    state: link
+  when: not version_deployed.stat.exists
+
+#### section for initializing the application to start and run as a service. 
+#- name: Add wso2 app init script.
+#  become: true
+#  become_method: sudo
+#  template:
+#    src: wso2service.j2
+#    dest: "/etc/init.d/inope-{{ wso2_app }}"
+#    mode: 0755
+ # notify: restart wso2-app
+#  tags:
+#   - initd 
+#
+
+- name: Add wso2 app init script.
+  become: true
+  become_method: sudo
+  template:
+    src: wso2is.service.j2
+    dest: "/usr/lib/systemd/system/inope-{{ wso2_app }}.service"
+    mode: 0644
+  notify: reload systemd
+  tags:
+   - systemd
+
+
+#- name: Ensure wso2-app is set to start on boot.
+#  become: true
+#  become_method: sudo
+#  service: 
+#    name: "{{ wso2_app }}" 
+#    enabled: yes
+#    state: started
+#  notify: restart wso2-app
+
+- name: Ensure wso2-app is set to start on boot.
+  become: true
+  become_method: sudo
+  systemd:
+    name: "inope-{{ wso2_app }}"
+    enabled: yes
+    state: started
+    masked: no
+  notify: reload systemd
+  tags:
+   - systemd
+
+- name : Appy templates for configuration
+  import_tasks: wso2is-config-main.yml
+  notify: restart wso2-app
+  tags:
+    - config
+

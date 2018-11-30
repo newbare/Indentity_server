@@ -1,0 +1,111 @@
+---
+# defaults file for ansible-wso2is
+wso2_user: wso2
+wso2_group: wso2
+carbon_base: "/opt/wso2/{{wso2_app}}"
+carbon_home: "{{carbon_base}}/current"
+unzip_folder: "/tmp"
+
+# these are the default ports for wso2 products
+wso2_default_https_port: 9443
+wso2_default_http_port: 9763
+
+#the following is written into the init.d file for the service
+java_home: "/usr/java/default"
+
+# wso2
+wso2_app: wso2is
+wso2_app_version: 5.3.0
+wso2_app_directory: "{{wso2_app}}-{{ wso2_app_version }}"
+wso2_app_offset: 0
+wso2_app_https_port: "{{ (wso2_default_https_port|int) + (wso2_app_offset|int) }}"
+wso2_app_http_port: "{{ (wso2_default_http_port|int) + (wso2_app_offset|int) }}"
+wso2_dir_archive: "/home/{{ wso2_user }}"
+wso2_app_archive: "{{ wso2_dir_archive }}/{{wso2_app}}-{{wso2_app_version}}.zip"
+oracle_driver: "ojdbc7.jar_12.1.0.1.jar"
+
+# Servidor
+Hostname: vminopelab21.cfv.junta-andalucia.es
+MgtHostname: vminopelab21.cfv.junta-andalucia.es
+admin_username: admin-is
+admin_password: admin-is
+admin_role: admin
+
+db_driver_class_name: oracle.jdbc.driver.OracleDriver
+db_max_active: 10
+db_max_wait: 2000
+db_max_waitmin_idle: 5
+db_test_on_borrow: true
+db_default_auto_commit: true
+db_validation_query: SELECT 1 FROM DUAL
+db_validation_interval: 30000
+
+usermgt_datasource: jdbc/INTER_USER_LST
+local_datasources:
+  - wso2_config_db:
+    name: INTER_IS_NODO_LST
+    description: The datasource used for local config, so we use h2 
+    url: jdbc:h2:repository/database/WSO2IS_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=600000
+    username: WSOIS_USER
+    password: WSOIS_USER
+    jndi_config: jdbc/INTER_IS_NODO_LST
+    driver_class: org.h2.Driver
+master_datasources:
+  - wso2_gov_db:
+    name: INTER_GREG_LST
+    description: The datasource used for gov registry
+    url: jdbc:oracle:thin:@vmorades11.cfv.junta-andalucia.es:1541/ORADES11
+    username: WSOGR_OWNER
+    password: WSOGR_OWNER
+    jndi_config: jdbc/INTER_GREG_LST
+  - wso2_user_db:
+    name: INTER_USER_LST
+    description: The datasource is used for user mangement and userstore
+    url: jdbc:oracle:thin:@vmorades11.cfv.junta-andalucia.es:1541/ORADES11
+    username: WSO2_USER
+    password:  WSO2_USER
+    jndi_config: jdbc/INTER_USER_LST
+  - wso2_id_db:
+    name: INTER_ID_LST
+    description: The datasource is used for user mangement and userstore
+    url: jdbc:oracle:thin:@vmorades11.cfv.junta-andalucia.es:1541/ORADES11
+    username: WSOID_USER
+    password: '*****'
+    jndi_config: jdbc/INTER_ID_LST
+  - wso2_um_db:
+    name: INTER_UM_LST
+    description: The datasource is used for user mangement and userstore
+    url: jdbc:oracle:thin:@vmorades11.cfv.junta-andalucia.es:1541/ORADES11
+    username: WSO2_USER
+    password: '*****'
+    jndi_config: jdbc/INTER_USER_LST
+
+
+
+registry_mount_db: WSOGR_OWNER@jdbc:oracle:thin:WSOGR_OWNER/WSOGR_OWNER@vmorades11.cfv.junta-andalucia.es:1541/ORADES11
+
+registry_mounts:
+  - wso2_config_db:
+    path: /_system/config
+    target_path: /_system/config/isnodes
+    read_only: false
+    registry_root: /
+    enable_cache: true
+  - wso2_gov_db:
+    path: /_system/governance
+    target_path: /_system/governance
+    read_only: false
+    registry_root: /
+    enable_cache: true
+
+
+# Variables para analytics
+# 
+analytics_enabled : false
+analytics_payloads_stats: true
+analytics_properties_stats: true
+analytics_all_artifacts_stats: true
+analytics_server_username : admin
+analytics_server_password : admin
+
+

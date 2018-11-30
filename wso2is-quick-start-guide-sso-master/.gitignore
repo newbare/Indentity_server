@@ -1,0 +1,6 @@
+#exclude IntelijIdea related files
+*.iml
+.idea
+
+#exclude build target directory
+target

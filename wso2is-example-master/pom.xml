@@ -1,0 +1,194 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>romulo</groupId>
+	<artifactId>wso2Example</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>wso2Example Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+
+		<!-- Unit Tests -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Jersey Servelet Container -->
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<version>2.25.1</version>
+		</dependency>
+
+		<!-- Jersey Server -->
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>2.25.1</version>
+		</dependency>
+
+		<!-- Jersey Client -->
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>2.25.1</version>
+		</dependency>
+
+		<!-- Connection between jersey and jackson -->
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>2.25.1</version>
+		</dependency>
+
+		<!-- Main component, serialize JSON -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+		<!-- Annotations -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-jaxb-annotations</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+		<!-- Annotations -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+		<!-- Data binding -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+		<!-- Pile of code that is shared by all Jackson-based JAX-RS providers. -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-base</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+		<!-- JSON Provider -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+		<!-- wso2 dependecies -->
+		<dependency>
+			<groupId>org.apache.axis2.wso2</groupId>
+			<artifactId>axis2</artifactId>
+			<version>1.6.1.wso2v10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.gdata.wso2</groupId>
+			<artifactId>gdata-core</artifactId>
+			<version>1.47.0.wso2v1</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.google.common.wso2</groupId>
+			<artifactId>google-collect</artifactId>
+			<version>1.0.0.wso2v2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.ws.commons.axiom.wso2</groupId>
+			<artifactId>axiom</artifactId>
+			<version>1.2.11.wso2v4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.amber</groupId>
+			<artifactId>oauth2-client</artifactId>
+			<version>0.22.1358727-wso2v5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wso2.carbon</groupId>
+			<artifactId>org.wso2.carbon.identity.oauth.stub</artifactId>
+			<version>4.2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wso2.carbon</groupId>
+			<artifactId>org.wso2.carbon.utils</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.3</version>
+		</dependency>
+
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>wso2-nexus</id>
+			<name>WSO2 internal Repository</name>
+			<url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+		</repository>
+	</repositories>
+
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
+	<build>
+		<finalName>wso2Example</finalName>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.1.0</version>
+
+				<configuration>
+					<outputDirectory>/opt/tomcat/webapps</outputDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>web-client/</exclude>
+					<exclude>conf.prp</exclude>
+				</excludes>
+			</resource>
+		</resources>
+
+	</build>
+</project>
+

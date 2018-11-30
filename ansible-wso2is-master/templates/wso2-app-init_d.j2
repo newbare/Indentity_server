@@ -1,0 +1,33 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          {{wso2_app}}
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: {{wso2_app}} init script
+# Description:       Initialization script for the WSO2 governance registry
+### END INIT INFO
+
+# Author: J.P. Klousia
+export JAVA_HOME='{{ java_home }}'
+
+startcmd='{{ carbon_home }}/bin/wso2server.sh -DportOffset={{wso2_app_offset}} start > /dev/null &'
+restartcmd='{{ carbon_home }}/bin/wso2server.sh -DportOffset={{wso2_app_offset}} restart > /dev/null &'
+stopcmd='{{ carbon_home }}/bin/wso2server.sh -DportOffset={{wso2_app_offset}} stop > /dev/null &'
+ 
+case "$1" in
+start)
+   echo "Starting the WSO2 Server ..."
+   su -s /bin/bash -c "${startcmd}" {{ wso2_user }} 
+;;
+restart)
+   echo "Re-starting the WSO2 Server ..."
+   su -s /bin/bash -c "${restartcmd}" {{ wso2_user }}  
+;;
+stop)
+   echo "Stopping the WSO2 Server ..."
+   su -s /bin/bash -c "${stopcmd}" {{ wso2_user }} 
+;;
+*)
+   echo "Usage: $0 {start|stop|restart}"
+exit 1
+esac

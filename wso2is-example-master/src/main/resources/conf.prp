@@ -1,0 +1,21 @@
+# Please copy it to {yours user's home path}/.wso2Example/
+
+# End points
+logoutEndpoint=https://localhost:9443/samlsso
+tokenEndpoint=https://localhost:9443/oauth2/token
+authzEndpoint=https://localhost:9443/oauth2/authorize
+userInformationEndpoint=https://localhost:9443/oauth2/userinfo?schema=openid
+tokenValidationEndpoint=https://localhost:9443/services/OAuth2TokenValidationService
+
+# User and password to validate token
+wso2User=admin
+wso2Password=admin
+
+# Key and secret configured on wso2is
+consumerKey=KEY
+consumerSecret=SECRET
+
+# Other infos
+scope=email
+serviceProviderName=wso2Example
+

@@ -1,0 +1,64 @@
+- name: Check if the drivers files are present
+  stat:
+    path: "{{ carbon_base }}/{{ wso2_app_directory }}/lib/{{ oracle_driver }}"
+  register: oracle_driver_deployed
+  tags:
+    - oracle_driver
+
+- name: Copy the database drivers 
+  become: true
+  become_method: sudo
+  become_user: "{{ wso2_user }}"
+  copy:
+    src: "{{ wso2_dir_archive }}/{{ item }}"
+    dest: "{{ carbon_base }}/{{ wso2_app_directory }}/lib/"
+    mode: 0644
+  with_items:
+    - "{{ oracle_driver }}"
+  when: not oracle_driver_deployed.stat.exists
+  tags:
+    - oracle_driver
+
+- name: Templates for config.
+  become: true
+  become_method: sudo
+  become_user: "{{ wso2_user }}"
+  template:
+    src: "{{ wso2_app_version }}/{{ item }}.j2"
+    dest: "{{ carbon_base }}/{{ wso2_app_directory }}/conf/{{ item }}"
+    mode: 0644
+  with_items:
+    - carbon.xml
+    - registry.xml
+    - user-mgt.xml
+    - axis2/axis2.xml
+    - identity/identity.xml
+    - identity/embedded-ldap.xml
+    - tomcat/catalina-server.xml
+
+  tags:
+    - is-config
+
+#- name: Template axis2.xml 
+#  become: true
+#  become_method: sudo
+#  become_user: "{{ wso2_user }}"
+#  template:
+#    src: "{{ wso2_app_version }}/axis2/axis2.xml.j2"
+#    dest: "{{ carbon_base }}/{{ wso2_app_directory }}/conf/axis2/axis2.xml"
+#    mode: 0644
+#  tags:
+#    - is-config
+#    - axis2
+
+- name: Template master-datasource.xml 
+  become: true
+  become_method: sudo
+  become_user: "{{ wso2_user }}"
+  template:
+    src: "{{ wso2_app_version }}/datasources/master-datasources.xml.j2"
+    dest: "{{ carbon_base }}/{{ wso2_app_directory }}/conf/datasources/master-datasources.xml"
+    mode: 0644
+  tags:
+    - is-config
+    - datasources

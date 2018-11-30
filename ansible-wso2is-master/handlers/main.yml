@@ -1,0 +1,14 @@
+---
+# handlers file for ansible-wso2is
+- name: restart wso2-app
+  become: true
+  become_method: sudo
+  systemd:
+    name: "inope-{{ wso2_app }}" 
+    state: restarted
+- name: reload systemd
+  become: true
+  systemd: 
+    name: "inope-{{ wso2_app }}"
+    daemon_reload: yes
+
